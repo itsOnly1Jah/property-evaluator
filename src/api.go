@@ -7,6 +7,8 @@ import (
 
 	"net/http"
 
+  "github.com/rs/cors"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
@@ -73,10 +75,11 @@ func (s *APIServer) Run() error {
 
 	v1 := http.NewServeMux()
 	v1.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
+  handler := cors.Default().Handler(v1)
 
 	server := http.Server{
 		Addr:    s.Addr,
-		Handler: v1,
+		Handler: handler,
 	}
 
 	log.Printf("Server has started %s", s.Addr)
