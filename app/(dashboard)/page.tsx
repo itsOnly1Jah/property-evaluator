@@ -213,7 +213,31 @@ const Dashboard = () => {
                 dashboard = "dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyList/>
+                content=<PropertyList filter=""/>
+              />
+            </TabsContent>
+            <TabsContent value="active">
+              <PropertyCard 
+                dashboard = "dashboard-06-chunk-0"
+                title="Property Evaluator"
+                description="Manage your properties and view their projected performance."
+                content=<PropertyList filter="status=Active"/>
+              />
+            </TabsContent>
+            <TabsContent value="draft">
+              <PropertyCard 
+                dashboard = "dashboard-06-chunk-0"
+                title="Property Evaluator"
+                description="Manage your properties and view their projected performance."
+                content=<PropertyList filter="status=Draft"/>
+              />
+            </TabsContent>
+            <TabsContent value="archived">
+              <PropertyCard 
+                dashboard = "dashboard-06-chunk-0"
+                title="Property Evaluator"
+                description="Manage your properties and view their projected performance."
+                content=<PropertyList filter="status=Archived"/>
               />
             </TabsContent>
           </Tabs>

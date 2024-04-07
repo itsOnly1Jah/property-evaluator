@@ -27,9 +27,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-const PropertyList = () => {
+const PropertyList = ({filter}) => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
-  const { data, error } = useSWR('http://localhost:9080/api/v1/properties', fetcher)
+  const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?${filter}`, fetcher)
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>
@@ -73,7 +73,7 @@ const PropertyList = () => {
               {property.Address.Street}, {property.Address.City}, {property.Address.State} {property.Address.Zipcode}
             </TableCell>
             <TableCell>
-              <Badge variant="outline">Draft</Badge>
+              <Badge variant="outline">{property.Status}</Badge>
             </TableCell>
             <TableCell className="hidden md:table-cell">
               ${property.PurchaseInfo.PurchasePrice}
