@@ -1,6 +1,8 @@
 import { Property } from '@/types'
 import useSWR from 'swr'
 
+import Link from "next/link"
+
 import {
   MoreHorizontal,
 } from "lucide-react"
@@ -13,6 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -26,7 +29,7 @@ import {
 
 const PropertyList = () => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
-  const {data, error} = useSWR('http://localhost:9080/api/v1/properties', fetcher)
+  const { data, error } = useSWR('http://localhost:9080/api/v1/properties', fetcher)
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>
@@ -95,6 +98,11 @@ const PropertyList = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                  <Link href={`/property/${property.Id}/purchase-info`} >Evaluate</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem>Edit</DropdownMenuItem>
                   <DropdownMenuItem>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
