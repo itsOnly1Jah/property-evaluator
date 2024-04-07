@@ -127,7 +127,7 @@ const PropertyView = ({ id }) => {
           <Textarea id="content" placeholder="You are a..." />
         </div>
       </fieldset>
-      <Button type="submit">Submit</Button>
+      <Button type="submit">Next</Button>
     </form>
   )
 }
