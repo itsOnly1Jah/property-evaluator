@@ -14,6 +14,7 @@ type Property struct {
     LastSoldPrice float64
     CreatedBy User
     UpdatedBy User
+    Status string
 }
 
 type Address struct {

@@ -9,6 +9,7 @@ export interface Property {
     LastSoldPrice: number;
     CreatedBy: any;
     UpdatedBy: any;
+    Status: string;
 }
 
 type Address = {
