@@ -58,7 +58,6 @@ type FixedExpenses = {
 }
 
 type VariableExpenses = {
-  VariableExpenses: number;
   Vacancy: number;
   RepairsMaintenance: number;
   CapitalExpenditures: number;

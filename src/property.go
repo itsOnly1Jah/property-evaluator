@@ -63,7 +63,6 @@ type FixedExpenses struct {
 }
 
 type VariableExpenses struct {
-  VariableExpenses float64
   Vacancy float64
   RepairsMaintenance float64
   CapitalExpenditures float64
