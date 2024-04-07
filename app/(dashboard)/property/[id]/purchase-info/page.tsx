@@ -2,7 +2,7 @@
 
 import Sidebar from "@/components/Sidebar"
 import PropertyCard from "@/components/PropertyCard"
-import PropertyView from "@/components/PropertyView"
+import PurchaseInfo from "@/components/PropertyPurchaseInfo"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -213,7 +213,7 @@ const Property = ({ params }) => {
                 dashboard = "dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyView id={params.id}/>
+                content=<PurchaseInfo id={params.id}/>
               />
             </TabsContent>
           </Tabs>

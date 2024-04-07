@@ -18,7 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 
-const PropertyView = ({ id }) => {
+const PurchaseInfo = ({ id }) => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
 
@@ -132,4 +132,4 @@ const PropertyView = ({ id }) => {
   )
 }
 
-export default PropertyView
+export default PurchaseInfo
