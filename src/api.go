@@ -10,6 +10,7 @@ import (
   "github.com/rs/cors"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"log"
@@ -47,11 +48,18 @@ func (s *APIServer) Run() error {
 		for key, value := range r.URL.Query() {
 			for _, value := range value {
 				intValue, err := strconv.Atoi(value)
-				if err != nil {
-					filter = append(filter, bson.E{key, value})
-				} else {
-					filter = append(filter, bson.E{key, intValue})
+				if err == nil {
+				  filter = append(filter, bson.E{key, intValue})
+          continue
 				}
+
+        objectId, err := primitive.ObjectIDFromHex(value)
+				if err == nil {
+					filter = append(filter, bson.E{key, objectId})
+          continue
+				}
+
+				filter = append(filter, bson.E{key, value})
 			}
 		}
 
