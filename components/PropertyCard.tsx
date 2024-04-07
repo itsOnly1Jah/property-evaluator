@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card"
 
 
-const PropertyCard = ({ dashboard, title, description, content, footer }) => {
+const PropertyCard = ({ dashboard, title, description, content }) => {
   return (
     <Card x-chunk={dashboard}>
       <CardHeader>
