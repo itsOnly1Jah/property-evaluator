@@ -100,7 +100,7 @@ const PropertyList = ({filter}) => {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                  <Link href={`/property/${property.Id}/purchase-info`} >Evaluate</Link>
+                  <Link href={`/property/${property.Id}`} >Evaluate</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Edit</DropdownMenuItem>
