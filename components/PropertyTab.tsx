@@ -1,3 +1,5 @@
+import useSWR from 'swr'
+
 import PropertyCard from "@/components/PropertyCard"
 import PurchaseInfo from "@/components/PropertyPurchaseInfo"
 import RentalInfo from "@/components/PropertyRentalInfo"
@@ -36,6 +38,13 @@ import {
 
 
 const PropertyTab = ({ id, defaultTab}) => {
+
+  const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
+  const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
+
+  if (error) return <div>Failed to load</div>
+  if (!data) return <div>Loading...</div>
+
   return (
     <Tabs defaultValue={defaultTab}>
       <div className="flex items-center">
@@ -83,33 +92,28 @@ const PropertyTab = ({ id, defaultTab}) => {
       <TabsContent value="purchase">
         <PropertyCard
           dashboard="dashboard-06-chunk-0"
-          title="Property Evaluator"
-          description="Manage your properties and view their projected performance."
+          title={data[0].Address.Street}
+          description={`${data[0].Address.City}, ${data[0].Address.State}, ${data[0].Address.Zipcode}`}
           content=<PurchaseInfo id={id} />
+          styling="text-center"
         />
       </TabsContent>
       <TabsContent value="rental">
         <PropertyCard
           dashboard="dashboard-06-chunk-0"
-          title="Property Evaluator"
-          description="Manage your properties and view their projected performance."
+          title={data[0].Address.Street}
+          description={`${data[0].Address.City}, ${data[0].Address.State}, ${data[0].Address.Zipcode}`}
           content=<RentalInfo id={id} />
+          styling="text-center"
         />
       </TabsContent>
       <TabsContent value="report">
         <PropertyCard
           dashboard="dashboard-06-chunk-0"
-          title="Property Evaluator"
-          description="Manage your properties and view their projected performance."
+          title={data[0].Address.Street}
+          description={`${data[0].Address.City}, ${data[0].Address.State}, ${data[0].Address.Zipcode}`}
           content=<PropertyReport id={id} />
-        />
-      </TabsContent>
-      <TabsContent value="all">
-        <PropertyCard
-          dashboard="dashboard-06-chunk-0"
-          title="Property Evaluator"
-          description="Manage your properties and view their projected performance."
-          content=<PurchaseInfo id={id} />
+          styling="text-center"
         />
       </TabsContent>
     </Tabs>
