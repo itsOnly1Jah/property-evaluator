@@ -27,6 +27,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { numberWithCommas } from "@/lib/property-evaluator"
+
 const PropertyList = ({filter}) => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?${filter}`, fetcher)
@@ -76,13 +78,13 @@ const PropertyList = ({filter}) => {
               <Badge variant="outline">{property.Status}</Badge>
             </TableCell>
             <TableCell className="hidden md:table-cell">
-              ${property.PurchaseInfo.PurchasePrice}
+              ${numberWithCommas(property.PurchaseInfo.LoanDetails.DownPayment.toFixed(2))}
             </TableCell>
             <TableCell className="hidden md:table-cell">
-              {property.Zestimate}
+              ${numberWithCommas(property.PurchaseInfo.PurchasePrice.toFixed(2))}
             </TableCell>
             <TableCell className="hidden md:table-cell">
-              {property.UpdatedBy.Date}
+              {Date.parse(property.UpdatedBy.Date).toLocaleString('en-US')}
             </TableCell>
             <TableCell>
               <DropdownMenu>
