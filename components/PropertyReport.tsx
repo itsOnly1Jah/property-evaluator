@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import useSWR from 'swr'
 import {
   debtServiceRatio,
@@ -32,6 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
+import ExpenseChart from "@/components/PropertyExpenseChart"
 
 const PropertyReport = ({ id }) => {
 
@@ -196,19 +197,11 @@ const PropertyReport = ({ id }) => {
           </Card>
         </div>
       </div>
-      <div className="flex-wrap">
-        <Card x-chunk="dashboard-05-chunk-1">
-          <CardHeader className="pb-2">
-            <CardDescription>ChartJS</CardDescription>
-            <CardTitle className="text-4xl">CHART</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              pretty
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card x-chunk="dashboard-05-chunk-1" className="flex-auto pt-5 pb-5">
+        <div className="grid place-items-center h-[28rem]">
+          <ExpenseChart id={id} />
+        </div>
+      </Card>
       <div>
         <div className="flex gap-2">
           <Card x-chunk="dashboard-05-chunk-1" className="text-center">
