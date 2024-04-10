@@ -127,7 +127,7 @@ const PurchaseInfo = ({ id }) => {
           <Textarea id="content" placeholder="You are a..." />
         </div>
       </fieldset>
-      <Button type="submit">Next</Button>
+      <Button type="submit">Save</Button>
     </form>
   )
 }

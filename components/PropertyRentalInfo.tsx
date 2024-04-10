@@ -106,7 +106,7 @@ const RentalInfo = ({ id }) => {
           <Input id="saleExpenses" type="number" placeholder={data[0].RentalInfo.FutureAssumptions.SaleExpenses} />
         </div>
       </fieldset>
-      <Button type="submit">Next</Button>
+      <Button type="submit">Save</Button>
     </form>
   )
 }
