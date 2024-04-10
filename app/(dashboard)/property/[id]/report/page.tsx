@@ -1,8 +1,6 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar"
-import PropertyCard from "@/components/PropertyCard"
-import PropertyReport from "@/components/PropertyReport"
 import PropertyTab from "@/components/PropertyTab"
 
 import Image from "next/image"
