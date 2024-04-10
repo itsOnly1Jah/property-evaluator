@@ -1,6 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar"
+import PropertyBreadCrumb, { breadCrumbLink } from "@/components/PropertyBreadCrumb"
 import PropertyList from "@/components/PropertyList"
 import PropertyCard from "@/components/PropertyCard"
 
@@ -20,14 +21,6 @@ import {
   Users2,
 } from "lucide-react"
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -51,7 +44,7 @@ import {
 const Dashboard = () => {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <Sidebar/>
+      <Sidebar />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
@@ -108,25 +101,13 @@ const Dashboard = () => {
               </nav>
             </SheetContent>
           </Sheet>
-          <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Property Evaluator</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>All Products</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <PropertyBreadCrumb
+            links={[
+              { title: "Dashboard", route: "/" },
+              { title: "Property Evaluator", route: "/" },
+            ]}
+            currentPage="All Properties"
+          />
           <div className="relative ml-auto flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -209,35 +190,35 @@ const Dashboard = () => {
               </div>
             </div>
             <TabsContent value="all">
-              <PropertyCard 
-                dashboard = "dashboard-06-chunk-0"
+              <PropertyCard
+                dashboard="dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyList filter=""/>
+                content=<PropertyList filter="" />
               />
             </TabsContent>
             <TabsContent value="active">
-              <PropertyCard 
-                dashboard = "dashboard-06-chunk-0"
+              <PropertyCard
+                dashboard="dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyList filter="status=Active"/>
+                content=<PropertyList filter="status=Active" />
               />
             </TabsContent>
             <TabsContent value="draft">
-              <PropertyCard 
-                dashboard = "dashboard-06-chunk-0"
+              <PropertyCard
+                dashboard="dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyList filter="status=Draft"/>
+                content=<PropertyList filter="status=Draft" />
               />
             </TabsContent>
             <TabsContent value="archived">
-              <PropertyCard 
-                dashboard = "dashboard-06-chunk-0"
+              <PropertyCard
+                dashboard="dashboard-06-chunk-0"
                 title="Property Evaluator"
                 description="Manage your properties and view their projected performance."
-                content=<PropertyList filter="status=Archived"/>
+                content=<PropertyList filter="status=Archived" />
               />
             </TabsContent>
           </Tabs>
