@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"net/http"
 
-  "github.com/rs/cors"
+	"github.com/rs/cors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -49,14 +50,14 @@ func (s *APIServer) Run() error {
 			for _, value := range value {
 				intValue, err := strconv.Atoi(value)
 				if err == nil {
-				  filter = append(filter, bson.E{key, intValue})
-          continue
+					filter = append(filter, bson.E{key, intValue})
+					continue
 				}
 
-        objectId, err := primitive.ObjectIDFromHex(value)
+				objectId, err := primitive.ObjectIDFromHex(value)
 				if err == nil {
 					filter = append(filter, bson.E{key, objectId})
-          continue
+					continue
 				}
 
 				filter = append(filter, bson.E{key, value})
@@ -81,9 +82,48 @@ func (s *APIServer) Run() error {
 		w.Write([]byte(jsonData))
 	})
 
+	router.HandleFunc("POST /properties/{id}", func(w http.ResponseWriter, r *http.Request) {
+
+		id, _ := primitive.ObjectIDFromHex(r.PathValue("id"))
+
+		coll := s.MongoDB.Database("property-evaluator").Collection("properties")
+
+		var property Property
+		err := json.NewDecoder(r.Body).Decode(&property)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+
+		data, _ := json.Marshal(property)
+		var doc Property
+		err = bson.UnmarshalExtJSON([]byte(string(data)), true, &doc)
+		if err != nil {
+		}
+
+		var updates []bson.E
+		updates = append(updates, bson.E{"Address", doc.Address})
+		updates = append(updates, bson.E{"PurchaseInfo", doc.PurchaseInfo})
+		updates = append(updates, bson.E{"RentalInfo", doc.RentalInfo})
+		updates = append(updates, bson.E{"Zestimate", doc.Zestimate})
+		updates = append(updates, bson.E{"LastSoldPrice", doc.LastSoldPrice})
+		updates = append(updates, bson.E{"CreatedBy", doc.CreatedBy})
+		updates = append(updates, bson.E{"UpdatedBy", doc.UpdatedBy})
+		updates = append(updates, bson.E{"Status", doc.Status})
+
+		filter := bson.D{{"_id", id}}
+		update := bson.D{{"$set", updates}}
+
+		result, err := coll.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Something went wrong updating property: %v\n", err.Error())))
+		}
+
+		w.Write([]byte(fmt.Sprintf("Documents updated: %v\n", result.ModifiedCount)))
+	})
+
 	v1 := http.NewServeMux()
 	v1.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
-  handler := cors.Default().Handler(v1)
+	handler := cors.Default().Handler(v1)
 
 	server := http.Server{
 		Addr:    s.Addr,
