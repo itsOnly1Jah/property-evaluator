@@ -231,7 +231,7 @@ const PropertyReport = ({ id }) => {
               </div>
               <div>
                 <p><strong>Loan Intrest</strong><span className="margin mx-8"></span>{Loan.InterestRate}%</p>
-                <p><strong>Monthly P&I</strong><span className="margin mx-8"></span>${numberWithCommas(mortgagePayment.toFixed(2))}</p>
+                <p><strong>Monthly P&I</strong><span className="margin mx-8"></span>${numberWithCommas(Math.abs(mortgagePayment).toFixed(2))}</p>
                 <p><strong>Total Cash Needed</strong><span className="margin mx-2"></span>
                   ${
                     numberWithCommas(totalCashNeeded.toFixed(2))
