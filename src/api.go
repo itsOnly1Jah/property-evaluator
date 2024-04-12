@@ -100,15 +100,8 @@ func (s *APIServer) Run() error {
 		if err != nil {
 		}
 
-		var updates []bson.E
-		updates = append(updates, bson.E{"Address", doc.Address})
-		updates = append(updates, bson.E{"PurchaseInfo", doc.PurchaseInfo})
-		updates = append(updates, bson.E{"RentalInfo", doc.RentalInfo})
-		updates = append(updates, bson.E{"Zestimate", doc.Zestimate})
-		updates = append(updates, bson.E{"LastSoldPrice", doc.LastSoldPrice})
-		updates = append(updates, bson.E{"CreatedBy", doc.CreatedBy})
-		updates = append(updates, bson.E{"UpdatedBy", doc.UpdatedBy})
-		updates = append(updates, bson.E{"Status", doc.Status})
+	  var updates []bson.E
+    updates = mongoUpdateParser(doc)
 
 		filter := bson.D{{"_id", id}}
 		update := bson.D{{"$set", updates}}
