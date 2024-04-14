@@ -82,6 +82,23 @@ func (s *APIServer) Run() error {
 		w.Write([]byte(jsonData))
 	})
 
+	router.HandleFunc("POST /properties", func(w http.ResponseWriter, r *http.Request) {
+
+		coll := s.MongoDB.Database("property-evaluator").Collection("properties")
+
+		var property Property
+		err := json.NewDecoder(r.Body).Decode(&property)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+
+    fmt.Printf("%+v", property)
+
+		result, err := coll.InsertOne(context.TODO(), property)
+
+		w.Write([]byte(fmt.Sprintf("Document inserted with ID: %v\n", result.InsertedID)))
+	})
+
 	router.HandleFunc("POST /properties/{id}", func(w http.ResponseWriter, r *http.Request) {
 
 		id, _ := primitive.ObjectIDFromHex(r.PathValue("id"))
@@ -100,8 +117,8 @@ func (s *APIServer) Run() error {
 		if err != nil {
 		}
 
-	  var updates []bson.E
-    updates = mongoUpdateParser(doc)
+		var updates []bson.E
+		updates = mongoUpdateParser(doc)
 
 		filter := bson.D{{"_id", id}}
 		update := bson.D{{"$set", updates}}

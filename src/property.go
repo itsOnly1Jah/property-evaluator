@@ -5,7 +5,7 @@ import (
 )
 
 type Property struct {
-    Id primitive.ObjectID `bson:"_id"`
+    Id primitive.ObjectID `bson:"_id,omitempty"`
     Address Address
     PurchaseInfo PurchaseInfo
     RentalInfo RentalInfo
