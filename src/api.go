@@ -92,8 +92,6 @@ func (s *APIServer) Run() error {
 			w.Write([]byte(err.Error()))
 		}
 
-    fmt.Printf("%+v", property)
-
 		result, err := coll.InsertOne(context.TODO(), property)
 
 		w.Write([]byte(fmt.Sprintf("Document inserted with ID: %v\n", result.InsertedID)))
@@ -131,9 +129,24 @@ func (s *APIServer) Run() error {
 		w.Write([]byte(fmt.Sprintf("Documents updated: %v\n", result.ModifiedCount)))
 	})
 
+	router.HandleFunc("DELETE /properties/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, _ := primitive.ObjectIDFromHex(r.PathValue("id"))
+		coll := s.MongoDB.Database("property-evaluator").Collection("properties")
+		filter := bson.D{{"_id", id}}
+
+    fmt.Printf("%+v", id)
+
+		result, err := coll.DeleteOne(context.TODO(), filter)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Something went wrong deleting property: %v\n", err.Error())))
+		}
+
+		w.Write([]byte(fmt.Sprintf("Documents deleted: %v\n", result.DeletedCount)))
+	})
+
 	v1 := http.NewServeMux()
 	v1.Handle("/api/v1/", http.StripPrefix("/api/v1", router))
-	handler := cors.Default().Handler(v1)
+	handler := cors.AllowAll().Handler(v1)
 
 	server := http.Server{
 		Addr:    s.Addr,

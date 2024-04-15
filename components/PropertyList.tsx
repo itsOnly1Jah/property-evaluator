@@ -1,4 +1,5 @@
 import { Property } from '@/types'
+import { MouseEventHandler, MouseEvent} from 'react'
 import useSWR from 'swr'
 
 import Link from "next/link"
@@ -29,12 +30,18 @@ import {
 
 import { numberWithCommas } from "@/lib/property-evaluator"
 
-const PropertyList = ({filter}) => {
+const PropertyList = ({ filter }: {filter: string}) => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?${filter}`, fetcher)
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>
+
+  const deleteProperty = async (e: MouseEventHandler<HTMLAnchorElement, MouseEvent>) => {
+    await fetch(`http://localhost:9080/api/v1/properties/${e.target.id}`, {
+      method: 'DELETE',
+    })
+  }
 
   return (
     <Table>
@@ -102,11 +109,13 @@ const PropertyList = ({filter}) => {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                  <Link href={`/property/${property.Id}`} >Evaluate</Link>
+                    <Link href={`/property/${property.Id}`} >Evaluate</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/" id={property.Id} onClick={deleteProperty}>Delete</Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
