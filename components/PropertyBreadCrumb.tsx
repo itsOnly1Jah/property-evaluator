@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-const PropertyBreadCrumb = ({ links, currentPage }) => {
+const PropertyBreadCrumb = ({ links, currentPage }: { links: { route: string, title: string }[], currentPage: string }) => {
 
   return (
     <Breadcrumb className="hidden md:flex">

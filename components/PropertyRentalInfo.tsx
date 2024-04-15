@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-const RentalInfo = ({ id }) => {
+const RentalInfo = ({ id }: {id: string}) => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 

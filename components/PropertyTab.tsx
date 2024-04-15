@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/tabs"
 
 
-const PropertyTab = ({ id, defaultTab }) => {
+const PropertyTab = ({ id, defaultTab }: {id: string, defaultTab: string}) => {
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)

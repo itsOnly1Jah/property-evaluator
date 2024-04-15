@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/card"
 
 
-const PropertyCard = ({ dashboard, title, description, content, styling = "" }) => {
+const PropertyCard = (
+  { dashboard, title, description, content, styling = "" }:
+  { dashboard: string, title: string, description: string, content: string, styling: string }
+) => {
   return (
     <Card x-chunk={dashboard}>
       <CardHeader className={styling}>

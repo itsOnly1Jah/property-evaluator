@@ -19,7 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 
-const PurchaseInfo = ({ id }) => {
+const PurchaseInfo = ({ id }: {id: string}) => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

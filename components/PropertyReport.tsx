@@ -34,7 +34,7 @@ import {
 
 import ExpenseChart from "@/components/PropertyExpenseChart"
 
-const PropertyReport = ({ id }) => {
+const PropertyReport = ({ id }: {id: string}) => {
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
