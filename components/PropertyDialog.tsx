@@ -49,6 +49,11 @@ export const AddProperty = () => {
         "State": formData.get("state"),
         "Zipcode": formData.get("zipcode")
       },
+      "RentalInfo": {
+        "FixedExpenses": {
+          "PropertyTaxes": Number(formData.get("annualPropertyTaxes")),
+        },
+      },
       "Status": "Draft"
     })
 
