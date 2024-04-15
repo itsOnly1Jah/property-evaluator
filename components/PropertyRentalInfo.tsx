@@ -26,7 +26,6 @@ const RentalInfo = ({ id }: {id: string}) => {
           "Garbage": Number(formData.get("garbage")),
           "Hoa": Number(formData.get("hoa")),
           "MonthlyInsurance": Number(formData.get("monthlyInsurance")),
-          "PropertyTaxes": Number(formData.get("propertyTaxes")),
           "OtherMonthlyExpenses": Number(formData.get("otherMonthlyExpenses"))
         },
         "VariableExpenses": {
@@ -105,7 +104,7 @@ const RentalInfo = ({ id }: {id: string}) => {
         </div>
         <div className="grid gap-3">
           <Label htmlFor="propertyTaxes">Property Taxes</Label>
-          <Input name="propertyTaxes" type="number" placeholder={data[0].RentalInfo.FixedExpenses.PropertyTaxes} />
+          <Input name="propertyTaxes" type="number" disabled={true} placeholder={(data[0].RentalInfo.FixedExpenses.PropertyTaxes/12).toFixed(2)} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherMonthlyExpenses">Other Expenses</Label>
