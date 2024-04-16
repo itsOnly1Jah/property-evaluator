@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
+import { numberWithCommas } from "@/lib/property-evaluator"
 
-const PurchaseInfo = ({ id }: {id: string}) => {
+const PurchaseInfo = ({ id }: { id: string }) => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -69,19 +70,19 @@ const PurchaseInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="purchasePrice">Purchase Price</Label>
-          <Input name="purchasePrice" type="number" step='.01' placeholder={data[0].PurchaseInfo.PurchasePrice} />
+          <Input name="purchasePrice" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="afterRepairValue-">After Repair Value</Label>
-          <Input name="afterRepairValue" type="number" step='.01' placeholder={data[0].PurchaseInfo.AfterRepairValue} />
+          <Input name="afterRepairValue" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.AfterRepairValue)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="closingCost">Closing Cost</Label>
-          <Input name="closingCost" type="number" step='.01' placeholder={data[0].PurchaseInfo.ClosingCost} />
+          <Input name="closingCost" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.ClosingCost)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="estimatedRepairCost">Estimated Repair Cost</Label>
-          <Input name="estimatedRepairCost" type="number" step='.01' placeholder={data[0].PurchaseInfo.EstimatedRepairCost} />
+          <Input name="estimatedRepairCost" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.EstimatedRepairCost)}`} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">

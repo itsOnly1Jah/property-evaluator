@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
+import { numberWithCommas} from "@/lib/property-evaluator"
+
 const RentalInfo = ({ id }: {id: string}) => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -67,11 +69,11 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="totalGrossMonthlyRent">Monthly Rent</Label>
-          <Input name="totalGrossMonthlyRent" type="number" placeholder={data[0].RentalInfo.Income.TotalGrossMonthlyRent} />
+          <Input name="totalGrossMonthlyRent" type="number" placeholder={`$${numberWithCommas(data[0].RentalInfo.Income.TotalGrossMonthlyRent)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherMonthlyIncome">Other Income</Label>
-          <Input name="otherMonthlyIncome" type="number" placeholder={data[0].RentalInfo.Income.OtherMonthlyIncome} />
+          <Input name="otherMonthlyIncome" type="number" placeholder={`$${numberWithCommas(data[0].RentalInfo.Income.OtherMonthlyIncome)}`} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -80,11 +82,11 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="role">Electricity</Label>
-          <Input name="electricity" type="number" placeholder={data[0].RentalInfo.FixedExpenses.Electricity} />
+          <Input name="electricity" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.Electricity}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="waterSewer">Water & Sewer</Label>
-          <Input name="waterSewer" type="number" placeholder={data[0].RentalInfo.FixedExpenses.WaterSewer} />
+          <Input name="waterSewer" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.WaterSewer}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="pmiPercentage">PMI</Label>
@@ -92,23 +94,23 @@ const RentalInfo = ({ id }: {id: string}) => {
         </div>
         <div className="grid gap-3">
           <Label htmlFor="garbage">Garbage</Label>
-          <Input name="garbage" type="number" placeholder={data[0].RentalInfo.FixedExpenses.Garbage} />
+          <Input name="garbage" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.Garbage}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="hoa">HOA</Label>
-          <Input name="hoa" type="number" placeholder={data[0].RentalInfo.FixedExpenses.HOA} />
+          <Input name="hoa" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.Hoa}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="monthlyInsurance">Monthly Insurance</Label>
-          <Input name="monthlyInsurance" type="number" placeholder={data[0].RentalInfo.FixedExpenses.MonthlyInsurance} />
+          <Input name="monthlyInsurance" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.MonthlyInsurance}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="propertyTaxes">Property Taxes</Label>
-          <Input name="propertyTaxes" type="number" disabled={true} placeholder={(data[0].RentalInfo.FixedExpenses.PropertyTaxes/12).toFixed(2)} />
+          <Input name="propertyTaxes" type="number" disabled={true} placeholder={numberWithCommas((data[0].RentalInfo.FixedExpenses.PropertyTaxes/12).toFixed(2))} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherMonthlyExpenses">Other Expenses</Label>
-          <Input name="otherMonthlyExpenses" type="number" placeholder={data[0].RentalInfo.FixedExpenses.OtherMonthlyExpenses} />
+          <Input name="otherMonthlyExpenses" type="number" placeholder={`$${data[0].RentalInfo.FixedExpenses.OtherMonthlyExpenses}`} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -117,19 +119,19 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="vacancy">Vacancy</Label>
-          <Input name="vacancy" type="number" placeholder={data[0].RentalInfo.VariableExpenses.Vacancy} />
+          <Input name="vacancy" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.Vacancy}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="repairsMaintenance">Repairs & Maintenance</Label>
-          <Input name="repairsMaintenance" type="number" placeholder={data[0].RentalInfo.VariableExpenses.RepairsMaintenance} />
+          <Input name="repairsMaintenance" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.RepairsMaintenance}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="capitalExpenditures">Capital Expenditures</Label>
-          <Input name="capitalExpenditures" type="number" placeholder={data[0].RentalInfo.VariableExpenses.CapitalExpenditures} />
+          <Input name="capitalExpenditures" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.CapitalExpenditures}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="managementFees">Management Fees</Label>
-          <Input name="managementFees" type="number" placeholder={data[0].RentalInfo.VariableExpenses.ManagementFees} />
+          <Input name="managementFees" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.ManagementFees}%`} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -138,19 +140,19 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="incomeGrowth">Income</Label>
-          <Input name="incomeGrowth" type="number" placeholder={data[0].RentalInfo.FutureAssumptions.IncomeGrowth} />
+          <Input name="incomeGrowth" type="number" placeholder={`${data[0].RentalInfo.FutureAssumptions.IncomeGrowth}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="pvGrowth">Property Value</Label>
-          <Input name="pvGrowth" type="number" placeholder={data[0].RentalInfo.FutureAssumptions.PvGrowth} />
+          <Input name="pvGrowth" type="number" placeholder={`${data[0].RentalInfo.FutureAssumptions.PvGrowth}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="expenseGrowth">Expenses</Label>
-          <Input name="expenseGrowth" type="number" placeholder={data[0].RentalInfo.FutureAssumptions.ExpenseGrowth} />
+          <Input name="expenseGrowth" type="number" placeholder={`${data[0].RentalInfo.FutureAssumptions.ExpenseGrowth}%`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="saleExpenses">Sale</Label>
-          <Input name="saleExpenses" type="number" placeholder={data[0].RentalInfo.FutureAssumptions.SaleExpenses} />
+          <Input name="saleExpenses" type="number" placeholder={`${data[0].RentalInfo.FutureAssumptions.SaleExpenses}%`} />
         </div>
       </fieldset>
       <Button type="submit">Save</Button>
