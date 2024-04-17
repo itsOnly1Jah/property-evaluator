@@ -1,5 +1,4 @@
-import { Property } from '@/types'
-import { FormEvent } from 'react'
+import { FormEvent, ChangeEvent } from 'react'
 import useSWR from 'swr'
 
 import { Input } from "@/components/ui/input"
@@ -9,13 +8,6 @@ import {
   RadioGroup,
   RadioGroupItem
 } from "@/components/ui/radio-group"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
 import { numberWithCommas } from "@/lib/property-evaluator"
@@ -33,7 +25,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         "ClosingCost": Number(formData.get("closingCost")),
         "EstimatedRepairCost": Number(formData.get("estimatedRepairCost")),
         "LoanDetails": {
-          "PercentDown": Number(formData.get("percentDown")),
+          "PercentDown": Number(formData.get("percentDown"))/100,
           "DownPayment": Number(formData.get("downPayment")),
           "InterestRate": Number(formData.get("interestRate")),
           "PointsFromLender": Number(formData.get("pointsFromLender")),
@@ -56,6 +48,21 @@ const PurchaseInfo = ({ id }: { id: string }) => {
 
   }
 
+  const updateDownPayment = (e: ChangeEvent<HTMLInputElement>) => {
+    const purchaseprice = data[0].PurchaseInfo.PurchasePrice
+    const percentage = +e.target.value/100
+    const downpayment = document.getElementById("downPayment") as HTMLInputElement
+    downpayment.value = (percentage * +purchaseprice).toFixed(2).toString()
+  };
+
+  const updatePercentage = (e: ChangeEvent<HTMLInputElement>) => {
+    const purchaseprice = data[0].PurchaseInfo.PurchasePrice
+    const downpayment = e.target.value
+
+    const percentage = document.getElementsByName("percentDown")[0] as HTMLInputElement
+    percentage.value = ((+downpayment/+purchaseprice)*100).toFixed(2).toString()
+  };
+
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
 
@@ -70,7 +77,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="purchasePrice">Purchase Price</Label>
-          <Input name="purchasePrice" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
+          <Input name="purchasePrice" id="purchasePrice" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="afterRepairValue-">After Repair Value</Label>
@@ -89,27 +96,12 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         <legend className="-ml-1 px-1 text-sm font-medium">
           Loan Details
         </legend>
-        <div className="grid gap-3">
+        <div>
           <Label htmlFor="role">Down Payment</Label>
-          <Select name="percentDown">
-            <SelectTrigger>
-              <SelectValue placeholder={data[0].PurchaseInfo.LoanDetails.PercentDown} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='0.035'>3.5%</SelectItem>
-              <SelectItem value='0.05'>.5%</SelectItem>
-              <SelectItem value='0.10'>10%</SelectItem>
-              <SelectItem value='0.15'>15%</SelectItem>
-              <SelectItem value='0.20'>20%</SelectItem>
-              <SelectItem value='0.25'>25%</SelectItem>
-              <SelectItem value='0.30'>30%</SelectItem>
-              <SelectItem value='0.35'>35%</SelectItem>
-              <SelectItem value='0.40'>40%</SelectItem>
-              <SelectItem value='0.45'>45%</SelectItem>
-              <SelectItem value='0.50'>50%</SelectItem>
-            </SelectContent>
-            <Input name="downPayment" type="number" step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.DownPayment} />
-          </Select>
+          <div className="flex">
+            <Input name="downPayment" id="downPayment" onChange={updatePercentage} type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.LoanDetails.DownPayment)}`} />
+            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown*100).toFixed(2)}%`} type="number" onChange={updateDownPayment} />
+          </div>
         </div>
         <div className="grid gap-3">
           <Label htmlFor="interestRate">Interest Rate</Label>
