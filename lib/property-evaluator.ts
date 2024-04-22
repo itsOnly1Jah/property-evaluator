@@ -31,8 +31,8 @@ export const twoPercentRule = (rentalIncome: number, totalProjectCost: number): 
 }
 
 
-export const equity = (propertyValue: number, loan: number): number => {
-  return sum([propertyValue, loan]) * 100
+export const equity = (propertyValue: number, loanBalance: number): number => {
+  return sum([propertyValue, -loanBalance])
 }
 
 export const grossRentMultiplier = (purchasePrice: number, income: number): number => {
@@ -55,10 +55,27 @@ export const loanBalance = (year: number, mortgage: number, interestRate: number
   const x = mortgage
   const i = interestRate / 1200
   const n = (yearsAmortized - (year + 1)) * 12
-  return (x * (1 - Math.pow((1 + i), -n))) / i || 0
+  return (x * (1 - Math.pow((1 + i), -n))) / i
 }
 
 export const interestRatePayment = (year: number, mortgage: number, interestRate: number, yearsAmortized: number): number => {
   const balance = loanBalance(year, mortgage, interestRate, yearsAmortized)
   return ((interestRate / 100) / 12) * balance
 }
+
+export const cashOnCashReturn = (annualCashflow: number, totalCashInvested: number): number => {
+  return annualCashflow / totalCashInvested
+}
+
+export const pmi = (loan: number, pmiRate: number): number => {
+  return pmiRate / 100 * loan
+}
+
+export const returnOnEquity = (annualIncome: number, equity: number): number => {
+  return annualIncome / equity
+}
+
+export const compoundInterest = (initial: number, years: number, interest: number): number => {
+  return initial * Math.pow(1 + (interest / 100), years)
+}
+

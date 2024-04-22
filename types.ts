@@ -39,7 +39,7 @@ type Loan = {
   CapRate: number;
 }
 
-type RentalInfo = {
+export type RentalInfo = {
   Income: Income;
   FixedExpenses: FixedExpenses;
   VariableExpenses: VariableExpenses;

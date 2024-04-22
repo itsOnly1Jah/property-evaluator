@@ -90,7 +90,7 @@ const RentalInfo = ({ id }: {id: string}) => {
         </div>
         <div className="grid gap-3">
           <Label htmlFor="pmiPercentage">PMI</Label>
-          <Input name="pmiPercentage" type="number" placeholder={data[0].RentalInfo.FixedExpenses.PmiPercentage} />
+          <Input name="pmiPercentage" type="number" step=".01" placeholder={data[0].RentalInfo.FixedExpenses.Pmi} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="garbage">Garbage</Label>

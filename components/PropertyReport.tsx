@@ -12,7 +12,7 @@ import {
   purchaseCapRate,
   returnOnInvestment,
   sum,
-  twoPercentRule
+  twoPercentRule,
 } from "@/lib/property-evaluator"
 
 import {
@@ -23,18 +23,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import ProjectionTable from "@/components/PropertyProjectionsTable"
 
 import ExpenseChart from "@/components/PropertyExpenseChart"
 
-const PropertyReport = ({ id }: {id: string}) => {
+const PropertyReport = ({ id }: { id: string }) => {
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
@@ -75,7 +68,8 @@ const PropertyReport = ({ id }: {id: string}) => {
 
   const vExpenses: number[] = Object.values(RentalInfo.VariableExpenses)
   const variableExpenses: number = sum(vExpenses.map((expense: number) => monthlyIncome * expense / 100))
-  const monthlyExpenses = -(sum(Object.values(RentalInfo.FixedExpenses)) + variableExpenses + (Loan.InterestOnly ? intrestOnlyPayment : mortgagePayment))
+  const fixedExpensesNoTax = Object.fromEntries(Object.entries(RentalInfo.FixedExpenses).filter( e => e[0] != "PropertyTaxes" ))
+  const monthlyExpenses = -(sum(Object.values(fixedExpensesNoTax)) + RentalInfo.FixedExpenses.PropertyTaxes/12 + variableExpenses + (Loan.InterestOnly ? intrestOnlyPayment : mortgagePayment))
   const annualExpenses = monthlyExpenses * 12
   const totalProjectCost = sum([
     PurchaseInfo.PurchasePrice,
@@ -225,7 +219,7 @@ const PropertyReport = ({ id }: {id: string}) => {
               </div>
               <div>
                 <p><strong>Down Payment</strong><span className="margin mx-5"></span>${numberWithCommas(Loan.DownPayment.toFixed(2))}</p>
-                <p><strong>Loan Amount</strong><span className="margin mx-7"></span>${numberWithCommas(PurchaseInfo.ClosingCost.toFixed(2))}</p>
+                <p><strong>Loan Amount</strong><span className="margin mx-7"></span>${numberWithCommas((PurchaseInfo.PurchasePrice - Loan.DownPayment) .toFixed(2))}</p>
                 <p><strong>Loan Points</strong><span className="margin mx-9"></span>{Loan.PointsFromLender}</p>
                 <p><strong>Amortized</strong><span className="margin mx-10"></span>{Loan.YearsAmortized}</p>
               </div>
@@ -308,17 +302,7 @@ const PropertyReport = ({ id }: {id: string}) => {
               </div>
             </div>
             <div className="pt-14 content-center">
-              <Table>
-                <TableHeader>
-                  <TableHead>Year 1</TableHead>
-                  <TableHead>Year 2</TableHead>
-                  <TableHead>Year 5</TableHead>
-                  <TableHead>Year 10</TableHead>
-                  <TableHead>Year 15</TableHead>
-                  <TableHead>Year 20</TableHead>
-                  <TableHead>Year 30</TableHead>
-                </TableHeader>
-              </Table>
+              <ProjectionTable property={data[0]} />
             </div>
           </CardContent>
         </Card>

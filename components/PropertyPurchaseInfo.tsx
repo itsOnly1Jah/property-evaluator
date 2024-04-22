@@ -100,7 +100,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           <Label htmlFor="role">Down Payment</Label>
           <div className="flex">
             <Input name="downPayment" id="downPayment" onChange={updatePercentage} type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.LoanDetails.DownPayment)}`} />
-            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown*100).toFixed(2)}%`} type="number" onChange={updateDownPayment} />
+            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown*100).toFixed(2)}%`} type="number" step='.01' onChange={updateDownPayment} />
           </div>
         </div>
         <div className="grid gap-3">

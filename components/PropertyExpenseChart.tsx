@@ -5,6 +5,7 @@ import {
   interestRatePayment,
   loanPoints,
   mortgage,
+  pmi,
   sum,
 } from "@/lib/property-evaluator"
 
@@ -68,11 +69,11 @@ const ExpenseChart = (id) => {
   const ChartInfo: ChartExpenses = {
     Electricity: RentalInfo.FixedExpenses.Electricity,
     'Water & Sewer': RentalInfo.FixedExpenses.WaterSewer,
-    PMI: RentalInfo.FixedExpenses.Pmi,
+    PMI: Number((pmi(RentalInfo.FixedExpenses.Pmi, (PurchaseInfo.PurchasePrice - Loan.DownPayment))/12).toFixed(2)),
     Garbage: RentalInfo.FixedExpenses.Garbage,
     HOA: RentalInfo.FixedExpenses.Hoa,
     Insurance: RentalInfo.FixedExpenses.MonthlyInsurance,
-    'Property Taxes': RentalInfo.FixedExpenses.PropertyTaxes,
+    'Property Taxes': Number((RentalInfo.FixedExpenses.PropertyTaxes/12).toFixed(2)),
     Other: RentalInfo.FixedExpenses.OtherMonthlyExpenses,
     Vacancy: monthlyIncome * (RentalInfo.VariableExpenses.Vacancy / 100),
     "Repairs & Maintenance": monthlyIncome * (RentalInfo.VariableExpenses.RepairsMaintenance / 100),
