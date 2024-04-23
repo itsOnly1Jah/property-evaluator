@@ -25,7 +25,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         "ClosingCost": Number(formData.get("closingCost")),
         "EstimatedRepairCost": Number(formData.get("estimatedRepairCost")),
         "LoanDetails": {
-          "PercentDown": Number(formData.get("percentDown"))/100,
+          "PercentDown": Number(formData.get("percentDown")) / 100,
           "DownPayment": Number(formData.get("downPayment")),
           "InterestRate": Number(formData.get("interestRate")),
           "PointsFromLender": Number(formData.get("pointsFromLender")),
@@ -50,7 +50,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
 
   const updateDownPayment = (e: ChangeEvent<HTMLInputElement>) => {
     const purchaseprice = data[0].PurchaseInfo.PurchasePrice
-    const percentage = +e.target.value/100
+    const percentage = +e.target.value / 100
     const downpayment = document.getElementById("downPayment") as HTMLInputElement
     downpayment.value = (percentage * +purchaseprice).toFixed(2).toString()
   };
@@ -60,7 +60,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
     const downpayment = e.target.value
 
     const percentage = document.getElementsByName("percentDown")[0] as HTMLInputElement
-    percentage.value = ((+downpayment/+purchaseprice)*100).toFixed(2).toString()
+    percentage.value = ((+downpayment / +purchaseprice) * 100).toFixed(2).toString()
   };
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
@@ -80,7 +80,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           <Input name="purchasePrice" id="purchasePrice" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
         </div>
         <div className="grid gap-3">
-          <Label htmlFor="afterRepairValue-">After Repair Value</Label>
+          <Label htmlFor="afterRepairValue">After Repair Value</Label>
           <Input id="afterRepairValue" name="afterRepairValue" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.AfterRepairValue)}`} />
         </div>
         <div className="grid gap-3">
@@ -97,10 +97,10 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           Loan Details
         </legend>
         <div>
-          <Label htmlFor="role">Down Payment</Label>
+          <Label htmlFor="downPayment">Down Payment</Label>
           <div className="flex">
             <Input name="downPayment" id="downPayment" onChange={updatePercentage} type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.LoanDetails.DownPayment)}`} />
-            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown*100).toFixed(2)}%`} type="number" step='.01' onChange={updateDownPayment} />
+            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown * 100).toFixed(2)}%`} type="number" step='.01' onChange={updateDownPayment} />
           </div>
         </div>
         <div className="grid gap-3">
@@ -116,8 +116,8 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           <Input id="otherFeesFromLender" name="otherFeesFromLender" type="number" step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.OtherFeesFromLender} />
         </div>
         <div className="grid gap-3">
-          <Label htmlFor="feesInLoan">Loan Fees & Points</Label>
-          <RadioGroup name="feesInLoan" defaultValue="false">
+          <Label>Loan Fees & Points</Label>
+          <RadioGroup id="feesInLoan" name="feesInLoan" defaultValue="false">
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="true" id="feesInLoanTrue" />
               <Label htmlFor="feesInLoanTrue">Wrap all loan fees into the loan</Label>
@@ -147,7 +147,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           <Input id="yearsAmortized" name="yearsAmortized" type="number" placeholder={data[0].PurchaseInfo.LoanDetails.YearsAmortized} />
         </div>
         <div className="grid gap-3">
-          <Label htmlFor="CapRate">Cap Rate</Label>
+          <Label htmlFor="capRate">Cap Rate</Label>
           <Input id="capRate" name="capRate" type="number" step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.CapRate} />
         </div>
       </fieldset>
