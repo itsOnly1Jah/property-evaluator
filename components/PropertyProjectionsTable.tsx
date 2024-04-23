@@ -248,8 +248,8 @@ const totalAnnualExpensesRow = (RentalInfo, annualExpenses: number) => {
 
 const operatingExpensesRow = (RentalInfo, OperatingExpenses: number) => {
   return (
-    <TableRow>
-      <TableHeader>Operating Expenses</TableHeader>
+    <TableRow className="bg-gray-50">
+      <TableHeader>&ensp;&ensp;Operating Expenses</TableHeader>
       <TableCell>
         ${numberWithCommas(
           compoundInterest(
@@ -319,8 +319,8 @@ const operatingExpensesRow = (RentalInfo, OperatingExpenses: number) => {
 
 const mortgagePaymentRow = (annualMortgage: number) => {
   return (
-    <TableRow>
-      <TableHeader>Mortgage Payment</TableHeader>
+    <TableRow className="bg-gray-50">
+      <TableHeader>&ensp;&ensp;&ensp;Mortgage Payment</TableHeader>
       <TableCell>
         ${numberWithCommas(annualMortgage.toFixed(2))}
       </TableCell>
@@ -448,7 +448,7 @@ const totalAnnualCashflow = (RentalInfo, monthlyIncome: number, monthlyExpenses:
 const cashOnCashRow = (RentalInfo, monthlyIncome: number, monthlyExpenses: number, totalCashInvested: number) => {
 
   return (
-    <TableRow>
+    <TableRow className="bg-gray-50">
       <TableHeader>Cash on Cash ROI</TableHeader>
       <TableCell>
         {
@@ -605,7 +605,7 @@ const propertyValueRow = (PurchaseInfo, RentalInfo) => {
 
 const equityRow = (PurchaseInfo, RentalInfo, mortgagePayment: number) => {
   return (
-    <TableRow>
+    <TableRow className="bg-gray-50">
       <TableHeader>Equity</TableHeader>
       <TableCell>
         ${numberWithCommas(
@@ -696,7 +696,7 @@ const equityRow = (PurchaseInfo, RentalInfo, mortgagePayment: number) => {
 
 const returnOnEquityRow = (PurchaseInfo, RentalInfo, mortgagePayment: number, monthlyIncome: number, monthlyExpenses: number) => {
   return (
-    <TableRow>
+    <TableRow className="bg-gray-50">
       <TableHeader>Return On Equity</TableHeader>
       <TableCell>
         {numberWithCommas(
@@ -873,7 +873,7 @@ const loanBalanceRow = (PurchaseInfo, RentalInfo, mortgagePayment: number) => {
 
 const totalProfitSoldRow = (PurchaseInfo, RentalInfo, mortgagePayment: number, totalCashNeeded: number, monthlyIncome: number, monthlyExpenses: number) => {
   return (
-    <TableRow>
+    <TableRow className="bg-gray-50">
       <TableHeader>Total Profit if Sold</TableHeader>
       <TableCell>
         ${numberWithCommas((
