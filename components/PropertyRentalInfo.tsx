@@ -1,4 +1,3 @@
-import { Property } from '@/types'
 import { FormEvent } from 'react'
 import useSWR from 'swr'
 

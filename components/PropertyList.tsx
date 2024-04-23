@@ -1,5 +1,5 @@
 import { Property } from '@/types'
-import { MouseEventHandler, MouseEvent} from 'react'
+import { MouseEventHandler, MouseEvent } from 'react'
 import useSWR from 'swr'
 
 import Link from "next/link"
@@ -20,6 +20,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  Dialog,
+  DialogTrigger
+} from "@/components/ui/dialog"
+import {
   Table,
   TableBody,
   TableCell,
@@ -28,9 +32,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { EditProperty } from "@/components/PropertyDialog"
+
 import { numberWithCommas } from "@/lib/property-evaluator"
 
-const PropertyList = ({ filter }: {filter: string}) => {
+const PropertyList = ({ filter }: { filter: string }) => {
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?${filter}`, fetcher)
 
@@ -94,30 +100,37 @@ const PropertyList = ({ filter }: {filter: string}) => {
               {Date.parse(property.UpdatedBy.Date).toLocaleString('en-US')}
             </TableCell>
             <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    aria-haspopup="true"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Toggle menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link href={`/property/${property.Id}`} >Evaluate</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/" id={property.Id} onClick={deleteProperty}>Delete</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      aria-haspopup="true"
+                      size="icon"
+                      variant="ghost"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link href={`/property/${property.Id}`} >Evaluate</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <DialogTrigger asChild>
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                      </DialogTrigger>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/" id={property.Id} onClick={deleteProperty}>Delete</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <EditProperty id={property.Id} />
+              </Dialog>
             </TableCell>
           </TableRow>
         ))}

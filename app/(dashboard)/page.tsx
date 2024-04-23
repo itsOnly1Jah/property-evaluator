@@ -4,7 +4,6 @@ import Sidebar from "@/components/Sidebar"
 import PropertyBreadCrumb, { breadCrumbLink } from "@/components/PropertyBreadCrumb"
 import PropertyList from "@/components/PropertyList"
 import PropertyCard from "@/components/PropertyCard"
-import PropertyDialog from "@/components/PropertyDialog"
 import { AddProperty } from "@/components/PropertyDialog"
 
 import Image from "next/image"
@@ -17,7 +16,6 @@ import {
   Package,
   Package2,
   PanelLeft,
-  PlusCircle,
   Search,
   ShoppingCart,
   Users2,
@@ -183,7 +181,7 @@ const Dashboard = () => {
                     Export
                   </span>
                 </Button>
-                <PropertyDialog dialogContent={AddProperty()} />
+                <AddProperty />
               </div>
             </div>
             <TabsContent value="all">
