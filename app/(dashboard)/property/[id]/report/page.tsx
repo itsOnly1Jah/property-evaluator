@@ -6,14 +6,11 @@ import PropertyTab from "@/components/PropertyTab"
 import Image from "next/image"
 import Link from "next/link"
 import {
-  File,
   Home,
   LineChart,
-  ListFilter,
   Package,
   Package2,
   PanelLeft,
-  PlusCircle,
   Search,
   ShoppingCart,
   Users2,
@@ -30,7 +27,6 @@ import {
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -39,13 +35,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-
 
 const Property = ({ params }) => {
   return (
