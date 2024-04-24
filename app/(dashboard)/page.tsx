@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar"
-import PropertyBreadCrumb, { breadCrumbLink } from "@/components/PropertyBreadCrumb"
+import PropertyBreadCrumb from "@/components/PropertyBreadCrumb"
 import PropertyList from "@/components/PropertyList"
 import PropertyCard from "@/components/PropertyCard"
 import { AddProperty } from "@/components/PropertyDialog"

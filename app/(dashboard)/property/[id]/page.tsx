@@ -1,36 +1,27 @@
 'use client';
 
+import useSWR from 'swr'
+
 import Sidebar from "@/components/Sidebar"
 import PropertyTab from "@/components/PropertyTab"
+import PropertyBreadCrumb from "@/components/PropertyBreadCrumb"
 
 import Image from "next/image"
 import Link from "next/link"
 import {
-  File,
   Home,
   LineChart,
-  ListFilter,
   Package,
   Package2,
   PanelLeft,
-  PlusCircle,
   Search,
   ShoppingCart,
   Users2,
 } from "lucide-react"
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -39,18 +30,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 
 
-const Property = ({ params }) => {
+const Property = ({ params }: { params: { id: string }}) => {
+
+  const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
+  const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${params.id}`, fetcher)
+
+  if (error) return <div>Failed to load</div>
+  if (!data) return <div>Loading...</div>
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <Sidebar/>
+      <Sidebar />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
@@ -107,25 +99,13 @@ const Property = ({ params }) => {
               </nav>
             </SheetContent>
           </Sheet>
-          <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Property Evaluator</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>All Products</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <PropertyBreadCrumb
+            links={[
+              { title: "Dashboard", route: "/" },
+              { title: "Property Evaluator", route: "/" },
+            ]}
+            currentPage={`${data[0].Address.Street}, ${data[0].Address.City}, ${data[0].Address.State} ${data[0].Address.Zipcode}`}
+          />
           <div className="relative ml-auto flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -161,7 +141,7 @@ const Property = ({ params }) => {
           </DropdownMenu>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <PropertyTab id={params.id} defaultTab="purchase"/>
+          <PropertyTab id={params.id} defaultTab="purchase" />
         </main>
       </div>
     </div>
