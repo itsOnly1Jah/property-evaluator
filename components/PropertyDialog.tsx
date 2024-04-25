@@ -174,6 +174,7 @@ export const AddProperty = () => {
                 name="annualPropertyTaxes"
                 className="col-span-2"
                 type="number"
+                min="0" 
               />
             </div>
           </div>
@@ -340,6 +341,7 @@ export const EditProperty = (id) => {
                 name="annualPropertyTaxes"
                 className="col-span-2"
                 type="number"
+                min="0" 
                 placeholder={property.RentalInfo.FixedExpenses.PropertyTaxes.toString()}
               />
             </div>
