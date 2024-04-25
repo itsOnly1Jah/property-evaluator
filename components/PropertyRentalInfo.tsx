@@ -5,9 +5,15 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-import { numberWithCommas} from "@/lib/property-evaluator"
+import { numberWithCommas, sum } from "@/lib/property-evaluator"
+import {
+  updateVacancyDollar,
+  updateRepairsMaintenanceDollar,
+  updateCapExDollar,
+  updateManagmentFeesDollar
+} from "@/lib/formFunctions"
 
-const RentalInfo = ({ id }: {id: string}) => {
+const RentalInfo = ({ id }: { id: string }) => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
@@ -68,7 +74,12 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="totalGrossMonthlyRent">Monthly Rent</Label>
-          <Input id="totalGrossMonthlyRent" name="totalGrossMonthlyRent" type="number" placeholder={`$${numberWithCommas(data[0].RentalInfo.Income.TotalGrossMonthlyRent)}`} />
+          <Input
+            id="totalGrossMonthlyRent"
+            name="totalGrossMonthlyRent"
+            type="number"
+            placeholder={`$${numberWithCommas(data[0].RentalInfo.Income.TotalGrossMonthlyRent)}`}
+          />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherMonthlyIncome">Other Income</Label>
@@ -105,7 +116,7 @@ const RentalInfo = ({ id }: {id: string}) => {
         </div>
         <div className="grid gap-3">
           <Label htmlFor="propertyTaxes">Property Taxes</Label>
-          <Input id="propertyTaxes" name="propertyTaxes" type="number" disabled={true} placeholder={numberWithCommas((data[0].RentalInfo.FixedExpenses.PropertyTaxes/12).toFixed(2))} />
+          <Input id="propertyTaxes" name="propertyTaxes" type="number" disabled={true} placeholder={numberWithCommas((data[0].RentalInfo.FixedExpenses.PropertyTaxes / 12).toFixed(2))} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherMonthlyExpenses">Other Expenses</Label>
@@ -118,19 +129,87 @@ const RentalInfo = ({ id }: {id: string}) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="vacancy">Vacancy</Label>
-          <Input id="vacancy" name="vacancy" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.Vacancy}%`} />
+          <div className="flex">
+            <Input
+              id="vacancy"
+              name="vacancy"
+              type="number"
+              min="0"
+              placeholder={`${data[0].RentalInfo.VariableExpenses.Vacancy}%`}
+              onChange={updateVacancyDollar} />
+            <Input
+              id="vacancyDollar"
+              name="vacancyDollar"
+              className="w-32"
+              disabled={true}
+              placeholder={
+                `$${numberWithCommas((data[0].RentalInfo.VariableExpenses.Vacancy / 100 * sum(Object.values(data[0].RentalInfo.Income))).toFixed(2))}`
+              }
+            />
+          </div>
         </div>
         <div className="grid gap-3">
           <Label htmlFor="repairsMaintenance">Repairs & Maintenance</Label>
-          <Input id="repairsMaintenance" name="repairsMaintenance" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.RepairsMaintenance}%`} />
+          <div className="flex">
+            <Input
+              id="repairsMaintenance"
+              name="repairsMaintenance"
+              type="number"
+              min="0"
+              placeholder={`${data[0].RentalInfo.VariableExpenses.RepairsMaintenance}%`}
+              onChange={updateRepairsMaintenanceDollar} />
+            <Input
+              id="repairsMaintenanceDollar"
+              name="repairsMaintenanceDollar"
+              className="w-32"
+              disabled={true}
+              placeholder={
+                `$${numberWithCommas((data[0].RentalInfo.VariableExpenses.RepairsMaintenance / 100 * sum(Object.values(data[0].RentalInfo.Income))).toFixed(2))}`
+              }
+            />
+          </div>
         </div>
         <div className="grid gap-3">
           <Label htmlFor="capitalExpenditures">Capital Expenditures</Label>
-          <Input id="capitalExpenditures" name="capitalExpenditures" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.CapitalExpenditures}%`} />
+          <div className="flex">
+            <Input
+              id="capitalExpenditures"
+              name="capitalExpenditures"
+              type="number"
+              min="0"
+              placeholder={`${data[0].RentalInfo.VariableExpenses.CapitalExpenditures}%`}
+              onChange={updateCapExDollar} />
+            <Input
+              id="capExDollar"
+              name="capExDollar"
+              className="w-32"
+              disabled={true}
+              placeholder={
+                `$${numberWithCommas((data[0].RentalInfo.VariableExpenses.CapitalExpenditures / 100 * sum(Object.values(data[0].RentalInfo.Income))).toFixed(2))}`
+              }
+            />
+          </div>
         </div>
         <div className="grid gap-3">
           <Label htmlFor="managementFees">Management Fees</Label>
-          <Input id="managementFees" name="managementFees" type="number" placeholder={`${data[0].RentalInfo.VariableExpenses.ManagementFees}%`} />
+          <div className="flex">
+            <Input
+              id="managementFees"
+              name="managementFees"
+              type="number"
+              min="0"
+              placeholder={`${data[0].RentalInfo.VariableExpenses.ManagementFees}%`}
+              onChange={updateManagmentFeesDollar} />
+            <Input
+              id="managementFeesDollar"
+              name="managementFeesDollar"
+              className="w-32"
+              disabled={true}
+              placeholder={
+                `$${numberWithCommas((data[0].RentalInfo.VariableExpenses.ManagementFees / 100 * sum(Object.values(data[0].RentalInfo.Income))).toFixed(2))}`
+              }
+            />
+          </div>
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
