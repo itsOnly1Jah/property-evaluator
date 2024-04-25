@@ -63,19 +63,19 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         </legend>
         <div className="grid gap-3">
           <Label htmlFor="purchasePrice">Purchase Price</Label>
-          <Input name="purchasePrice" id="purchasePrice" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
+          <Input name="purchasePrice" id="purchasePrice" type="number" min="0" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.PurchasePrice)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="afterRepairValue">After Repair Value</Label>
-          <Input id="afterRepairValue" name="afterRepairValue" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.AfterRepairValue)}`} />
+          <Input id="afterRepairValue" name="afterRepairValue" type="number" min="0" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.AfterRepairValue)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="closingCost">Closing Cost</Label>
-          <Input id="closingCost" name="closingCost" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.ClosingCost)}`} />
+          <Input id="closingCost" name="closingCost" type="number" min="0" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.ClosingCost)}`} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="estimatedRepairCost">Estimated Repair Cost</Label>
-          <Input id="estimatedRepairCost" name="estimatedRepairCost" type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.EstimatedRepairCost)}`} />
+          <Input id="estimatedRepairCost" name="estimatedRepairCost" type="number" min="0" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.EstimatedRepairCost)}`} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -126,15 +126,15 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         </div>
         <div className="grid gap-3">
           <Label htmlFor="interestRate">Interest Rate</Label>
-          <Input id="interestRate" name="interestRate" type="number" step='.001' placeholder={data[0].PurchaseInfo.LoanDetails.InterestRate} />
+          <Input id="interestRate" name="interestRate" type="number" min="0" step='.001' placeholder={data[0].PurchaseInfo.LoanDetails.InterestRate} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="pointsFromLender">Points</Label>
-          <Input id="pointsFromLender" name="pointsFromLender" type="number" step='.001' placeholder={data[0].PurchaseInfo.LoanDetails.PointsFromLender} />
+          <Input id="pointsFromLender" name="pointsFromLender" type="number" min="0" step='.001' placeholder={data[0].PurchaseInfo.LoanDetails.PointsFromLender} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="otherFeesFromLender">Other</Label>
-          <Input id="otherFeesFromLender" name="otherFeesFromLender" type="number" step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.OtherFeesFromLender} />
+          <Input id="otherFeesFromLender" name="otherFeesFromLender" type="number" min="0"  step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.OtherFeesFromLender} />
         </div>
         <div className="grid gap-3">
           <Label>Loan Fees & Points</Label>
@@ -165,11 +165,11 @@ const PurchaseInfo = ({ id }: { id: string }) => {
 
         <div className="grid gap-3">
           <Label htmlFor="yearsAmortized">Years Amortized</Label>
-          <Input id="yearsAmortized" name="yearsAmortized" type="number" placeholder={data[0].PurchaseInfo.LoanDetails.YearsAmortized} />
+          <Input id="yearsAmortized" name="yearsAmortized" type="number" min="0" placeholder={data[0].PurchaseInfo.LoanDetails.YearsAmortized} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="capRate">Cap Rate</Label>
-          <Input id="capRate" name="capRate" type="number" step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.CapRate} />
+          <Input id="capRate" name="capRate" type="number" min="0"  step='.01' placeholder={data[0].PurchaseInfo.LoanDetails.CapRate} />
         </div>
       </fieldset>
       <fieldset className="grid gap-6 rounded-lg border p-4">
