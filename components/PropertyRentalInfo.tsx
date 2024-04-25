@@ -6,12 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
 import { numberWithCommas, sum } from "@/lib/property-evaluator"
-import {
-  updateVacancyDollar,
-  updateRepairsMaintenanceDollar,
-  updateCapExDollar,
-  updateManagmentFeesDollar
-} from "@/lib/formFunctions"
+import { updateDollarInput } from "@/lib/formFunctions"
 
 const RentalInfo = ({ id }: { id: string }) => {
 
@@ -58,6 +53,17 @@ const RentalInfo = ({ id }: { id: string }) => {
       body: json
     }).then(res => console.log(res)).catch(err => console.log(err))
 
+  }
+
+  const totalIncome = (): number => {
+    return sum([
+      (document.getElementById("totalGrossMonthlyRent") as HTMLInputElement).value ?
+        +(document.getElementById("totalGrossMonthlyRent") as HTMLInputElement)?.value :
+        +(document.getElementById("totalGrossMonthlyRent") as HTMLInputElement)?.placeholder.split('$')[1].replace(',', ''),
+      (document.getElementById("otherMonthlyIncome") as HTMLInputElement).value ?
+        +(document.getElementById("otherMonthlyIncome") as HTMLInputElement)?.value :
+        +(document.getElementById("otherMonthlyIncome") as HTMLInputElement)?.placeholder.split('$')[1].replace(',', ''),
+    ])
   }
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
@@ -136,7 +142,11 @@ const RentalInfo = ({ id }: { id: string }) => {
               type="number"
               min="0"
               placeholder={`${data[0].RentalInfo.VariableExpenses.Vacancy}%`}
-              onChange={updateVacancyDollar} />
+              onChange={event => updateDollarInput(
+                event,
+                document.getElementById("vacancyDollar") as HTMLInputElement,
+                totalIncome()
+              )} />
             <Input
               id="vacancyDollar"
               name="vacancyDollar"
@@ -157,7 +167,11 @@ const RentalInfo = ({ id }: { id: string }) => {
               type="number"
               min="0"
               placeholder={`${data[0].RentalInfo.VariableExpenses.RepairsMaintenance}%`}
-              onChange={updateRepairsMaintenanceDollar} />
+              onChange={event => updateDollarInput(
+                event,
+                document.getElementById("repairsMaintenanceDollar") as HTMLInputElement,
+                totalIncome()
+              )} />
             <Input
               id="repairsMaintenanceDollar"
               name="repairsMaintenanceDollar"
@@ -178,7 +192,11 @@ const RentalInfo = ({ id }: { id: string }) => {
               type="number"
               min="0"
               placeholder={`${data[0].RentalInfo.VariableExpenses.CapitalExpenditures}%`}
-              onChange={updateCapExDollar} />
+              onChange={event => updateDollarInput(
+                event,
+                document.getElementById("capExDollar") as HTMLInputElement,
+                totalIncome()
+              )} />
             <Input
               id="capExDollar"
               name="capExDollar"
@@ -199,7 +217,11 @@ const RentalInfo = ({ id }: { id: string }) => {
               type="number"
               min="0"
               placeholder={`${data[0].RentalInfo.VariableExpenses.ManagementFees}%`}
-              onChange={updateManagmentFeesDollar} />
+              onChange={event => updateDollarInput(
+                event,
+                document.getElementById("managementFeesDollar") as HTMLInputElement,
+                totalIncome()
+              )} />
             <Input
               id="managementFeesDollar"
               name="managementFeesDollar"
