@@ -1,4 +1,4 @@
-import { FormEvent, ChangeEvent } from 'react'
+import { FormEvent } from 'react'
 import useSWR from 'swr'
 
 import { Input } from "@/components/ui/input"
@@ -11,6 +11,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 import { numberWithCommas } from "@/lib/property-evaluator"
+import { updatePercentage, updateDownPayment } from "@/lib/formFunctions"
 
 const PurchaseInfo = ({ id }: { id: string }) => {
 
@@ -48,21 +49,6 @@ const PurchaseInfo = ({ id }: { id: string }) => {
 
   }
 
-  const updateDownPayment = (e: ChangeEvent<HTMLInputElement>) => {
-    const purchaseprice = data[0].PurchaseInfo.PurchasePrice
-    const percentage = +e.target.value / 100
-    const downpayment = document.getElementById("downPayment") as HTMLInputElement
-    downpayment.value = (percentage * +purchaseprice).toFixed(2).toString()
-  };
-
-  const updatePercentage = (e: ChangeEvent<HTMLInputElement>) => {
-    const purchaseprice = data[0].PurchaseInfo.PurchasePrice
-    const downpayment = e.target.value
-
-    const percentage = document.getElementsByName("percentDown")[0] as HTMLInputElement
-    percentage.value = ((+downpayment / +purchaseprice) * 100).toFixed(2).toString()
-  };
-
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
   const { data, error } = useSWR(`http://localhost:9080/api/v1/properties?_id=${id}`, fetcher)
 
@@ -99,8 +85,43 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         <div>
           <Label htmlFor="downPayment">Down Payment</Label>
           <div className="flex">
-            <Input name="downPayment" id="downPayment" onChange={updatePercentage} type="number" step='.01' placeholder={`$${numberWithCommas(data[0].PurchaseInfo.LoanDetails.DownPayment)}`} />
-            <Input className="w-32" name="percentDown" placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown * 100).toFixed(2)}%`} type="number" step='.01' onChange={updateDownPayment} />
+            <Input
+              name="downPayment"
+              id="downPayment"
+              onChange={event => updatePercentage(
+                event,
+                document.getElementsByName("percentDown")[0] as HTMLInputElement,
+                (document.getElementById("purchasePrice") as HTMLInputElement)?.value ?
+                  (document.getElementById("purchasePrice") as HTMLInputElement)?.value :
+                  data[0].PurchaseInfo.PurchasePrice
+              )}
+              type="number"
+              min="0"
+              max={
+                (document.getElementById("purchasePrice") as HTMLInputElement)?.value ?
+                  (document.getElementById("purchasePrice") as HTMLInputElement)?.value :
+                  data[0].PurchaseInfo.PurchasePrice
+              }
+              step='.01'
+              placeholder={`$${numberWithCommas(data[0].PurchaseInfo.LoanDetails.DownPayment)}`}
+            />
+            <Input
+              className="w-32"
+              name="percentDown"
+              placeholder={`${(data[0].PurchaseInfo.LoanDetails.PercentDown * 100).toFixed(2)}%`}
+              type="number"
+              min="0"
+              max="100"
+              step='.01'
+              onChange={
+                event => updateDownPayment(
+                  event,
+                  document.getElementById("downPayment") as HTMLInputElement,
+                  (document.getElementById("purchasePrice") as HTMLInputElement).value ?
+                    (document.getElementById("purchasePrice") as HTMLInputElement).value :
+                    data[0].PurchaseInfo.PurchasePrice
+                )}
+            />
           </div>
         </div>
         <div className="grid gap-3">
