@@ -1,6 +1,6 @@
 import {Property} from '@/types'
 import useSWR from 'swr'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,8 +24,11 @@ import { PlusCircle } from "lucide-react"
 
 export const AddProperty = () => {
 
+  const [isSubmitting, setSubmitting] = useState(false)
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
     const json = JSON.stringify({
@@ -51,6 +54,7 @@ export const AddProperty = () => {
       body: json
     }).then(res => console.log(res)).catch(err => console.log(err))
 
+    setSubmitting(false)
   }
 
   return (
@@ -179,7 +183,7 @@ export const AddProperty = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" disabled={isSubmitting}>Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -189,8 +193,11 @@ export const AddProperty = () => {
 
 export const EditProperty = (id) => {
 
+  const [isSubmitting, setSubmitting] = useState(false)
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
     const json = JSON.stringify({
@@ -216,6 +223,7 @@ export const EditProperty = (id) => {
       body: json
     }).then(res => console.log(res)).catch(err => console.log(err))
 
+    setSubmitting(false)
   }
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
@@ -225,6 +233,7 @@ export const EditProperty = (id) => {
   if (!data) return <div>Loading...</div>
 
   const property: Property = data[0]
+
 
   return (
       <DialogContent className="sm:max-w-[550px]">
@@ -347,7 +356,7 @@ export const EditProperty = (id) => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" disabled={isSubmitting}>Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>

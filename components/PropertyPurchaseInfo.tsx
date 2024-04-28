@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import useSWR from 'swr'
 
 import { Input } from "@/components/ui/input"
@@ -15,8 +15,11 @@ import { updatePercentage, updateDownPayment } from "@/lib/formFunctions"
 
 const PurchaseInfo = ({ id }: { id: string }) => {
 
+  const [isSubmitting, setSubmitting] = useState(false)
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
     const json = JSON.stringify({
@@ -46,7 +49,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
       },
       body: json
     }).then(res => console.log(res)).catch(err => console.log(err))
-
+    setSubmitting(false)
   }
 
   const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then(res => res.json())
@@ -181,7 +184,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           <Textarea id="content" name="content" placeholder="You are a..." />
         </div>
       </fieldset>
-      <Button type="submit">Save</Button>
+      <Button type="submit" disabled={isSubmitting}>Save</Button>
     </form>
   )
 }

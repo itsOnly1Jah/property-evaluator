@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import useSWR from 'swr'
 
 import { Input } from "@/components/ui/input"
@@ -10,9 +10,12 @@ import { updateDollarInput } from "@/lib/formFunctions"
 
 const RentalInfo = ({ id }: { id: string }) => {
 
+  const [isSubmitting, setSubmitting] = useState(false)
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
     e.preventDefault()
+    setSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
     const json = JSON.stringify({
@@ -52,6 +55,8 @@ const RentalInfo = ({ id }: { id: string }) => {
       },
       body: json
     }).then(res => console.log(res)).catch(err => console.log(err))
+
+    setSubmitting(false)
 
   }
 
@@ -265,7 +270,7 @@ const RentalInfo = ({ id }: { id: string }) => {
           <Input id="saleExpenses" name="saleExpenses" type="number" min="0" max="100" placeholder={`${data[0].RentalInfo.FutureAssumptions.SaleExpenses}%`} />
         </div>
       </fieldset>
-      <Button type="submit">Save</Button>
+      <Button type="submit" disabled={isSubmitting}>Save</Button>
     </form>
   )
 }
