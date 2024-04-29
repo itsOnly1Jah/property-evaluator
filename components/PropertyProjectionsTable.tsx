@@ -23,6 +23,8 @@ import {
 
 import { Property, RentalInfo } from "@/types"
 
+const projectedYears: number[] = [0, 1, 4, 9, 14, 19, 29]
+
 const ProjectionTable = ({ property }: { property: Property }) => {
 
   const PurchaseInfo = property.PurchaseInfo
@@ -30,7 +32,6 @@ const ProjectionTable = ({ property }: { property: Property }) => {
   const Loan = property.PurchaseInfo.LoanDetails
 
   const monthlyIncome = sum(Object.values(RentalInfo.Income))
-  const annualIncome = sum(Object.values(RentalInfo.Income)) * 12
   const points = loanPoints(
     PurchaseInfo.PurchasePrice,
     Loan.DownPayment,
@@ -61,11 +62,6 @@ const ProjectionTable = ({ property }: { property: Property }) => {
   const fixedExpensesNoTax = Object.fromEntries(Object.entries(RentalInfo.FixedExpenses).filter(e => e[0] != "PropertyTaxes"))
   const monthlyExpenses = -(sum(Object.values(fixedExpensesNoTax)) + RentalInfo.FixedExpenses.PropertyTaxes / 12 + variableExpenses + (Loan.InterestOnly ? intrestOnlyPayment : mortgagePayment))
   const annualExpenses = monthlyExpenses * 12
-  const totalProjectCost = sum([
-    PurchaseInfo.PurchasePrice,
-    PurchaseInfo.ClosingCost,
-    PurchaseInfo.EstimatedRepairCost
-  ])
 
   const totalCashNeeded = sum([
     Loan.DownPayment,
@@ -97,7 +93,7 @@ const ProjectionTable = ({ property }: { property: Property }) => {
         {propertyValueRow(PurchaseInfo, RentalInfo)}
         {equityRow(PurchaseInfo, RentalInfo, mortgagePayment)}
         {returnOnEquityRow(PurchaseInfo, RentalInfo, mortgagePayment, monthlyExpenses, totalCashNeeded)}
-        {loanBalanceRow(PurchaseInfo, RentalInfo, mortgagePayment)}
+        {loanBalanceRow(PurchaseInfo, mortgagePayment)}
         {totalProfitSoldRow(PurchaseInfo, RentalInfo, mortgagePayment, totalCashNeeded, monthlyIncome, monthlyExpenses)}
       </TableBody>
     </Table>
@@ -105,853 +101,265 @@ const ProjectionTable = ({ property }: { property: Property }) => {
 }
 
 const totalAnnualIncomeRow = (RentalInfo) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          compoundInterest(
+            sum(Object.values(RentalInfo.Income)) * 12,
+            year,
+            RentalInfo.FutureAssumptions.IncomeGrowth
+          ).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow>
       <TableHeader>Total Annual Income</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            0,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            1,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            4,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            9,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            14,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            19,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            sum(Object.values(RentalInfo.Income)) * 12,
-            29,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const totalAnnualExpensesRow = (RentalInfo, annualExpenses: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          compoundInterest(
+            Math.abs(annualExpenses),
+            year,
+            RentalInfo.FutureAssumptions.ExpenseGrowth
+          ).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow>
       <TableHeader>Total Annual Expenses</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            0,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            1,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            4,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            9,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            14,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            19,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            Math.abs(annualExpenses),
-            29,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const operatingExpensesRow = (RentalInfo, OperatingExpenses: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          compoundInterest(
+            OperatingExpenses,
+            year,
+            RentalInfo.FutureAssumptions.ExpenseGrowth
+          ).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>&ensp;&ensp;Operating Expenses</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            0,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            1,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            4,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            9,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            14,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            19,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            OperatingExpenses,
-            29,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const mortgagePaymentRow = (annualMortgage: number) => {
+  const cells: any[] = []
+  projectedYears.forEach(() => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(annualMortgage.toFixed(2))}
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>&ensp;&ensp;&ensp;Mortgage Payment</TableHeader>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(annualMortgage.toFixed(2))}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const totalAnnualCashflow = (RentalInfo, monthlyIncome: number, monthlyExpenses: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas((monthlyCashflow
+          (compoundInterest(
+            monthlyIncome,
+            year,
+            RentalInfo.FutureAssumptions.IncomeGrowth
+          ), compoundInterest(
+            monthlyExpenses,
+            year,
+            RentalInfo.FutureAssumptions.ExpenseGrowth
+          )) * 12).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow>
       <TableHeader>Total Annual Cashflow</TableHeader>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            0,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            0,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            1,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            1,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            4,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            4,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            9,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            9,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            14,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            14,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            19,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            19,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((monthlyCashflow
-          (compoundInterest(
-            monthlyIncome,
-            29,
-            RentalInfo.FutureAssumptions.IncomeGrowth
-          ), compoundInterest(
-            monthlyExpenses,
-            29,
-            RentalInfo.FutureAssumptions.ExpenseGrowth
-          )) * 12).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const cashOnCashRow = (RentalInfo, monthlyIncome: number, monthlyExpenses: number, totalCashInvested: number) => {
-
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        {
+          cashOnCashReturn(
+            monthlyCashflow(
+              compoundInterest(monthlyIncome, year, RentalInfo.FutureAssumptions.IncomeGrowth),
+              compoundInterest(monthlyExpenses, year, RentalInfo.FutureAssumptions.ExpenseGrowth)
+            ) * 12,
+            totalCashInvested
+          ).toFixed(2)
+        }%
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>Cash on Cash ROI</TableHeader>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 0, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 0, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 1, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 1, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 4, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 4, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 9, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 9, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 14, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 14, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 19, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 19, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
-      <TableCell>
-        {
-          cashOnCashReturn(
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 29, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 29, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12,
-            totalCashInvested
-          ).toFixed(2)
-        }%
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const propertyValueRow = (PurchaseInfo, RentalInfo) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          compoundInterest(
+            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
+            year,
+            RentalInfo.FutureAssumptions.PvGrowth
+          ).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow>
       <TableHeader>Property Value</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            0,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            1,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            4,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            9,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            14,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            19,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            29,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 
 const equityRow = (PurchaseInfo, RentalInfo, mortgagePayment: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          equity(
+            compoundInterest(
+              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
+              year,
+              RentalInfo.FutureAssumptions.PvGrowth
+            ),
+            loanBalance(year, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
+          ).toFixed(2))
+        }
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>Equity</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              0,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(0, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(compoundInterest(
-            PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-            1,
-            RentalInfo.FutureAssumptions.PvGrowth
-          ),
-            loanBalance(1, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              4,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(4, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              9,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(9, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              14,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(14, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              19,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(19, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          equity(
-            compoundInterest(
-              PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-              29,
-              RentalInfo.FutureAssumptions.PvGrowth
-            ),
-            loanBalance(29, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          ).toFixed(2))
-        }
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const returnOnEquityRow = (PurchaseInfo, RentalInfo, mortgagePayment: number, monthlyIncome: number, monthlyExpenses: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        {numberWithCommas(
+          returnOnEquity(
+            equity(
+              compoundInterest(
+                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
+                year,
+                RentalInfo.FutureAssumptions.PvGrowth
+              ),
+              loanBalance(year, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
+            ),
+            monthlyCashflow(
+              compoundInterest(monthlyIncome, year, RentalInfo.FutureAssumptions.IncomeGrowth),
+              compoundInterest(monthlyExpenses, year, RentalInfo.FutureAssumptions.ExpenseGrowth)
+            ) * 12
+          ).toFixed(2))
+        }%
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>Return On Equity</TableHeader>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                0,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(0, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 0, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 0, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                1,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(1, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 1, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 1, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                4,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(4, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 4, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 4, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                9,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(9, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 9, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 9, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                14,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(14, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 14, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 14, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                19,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(19, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 19, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 19, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
-      <TableCell>
-        {numberWithCommas(
-          returnOnEquity(
-            equity(
-              compoundInterest(
-                PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)),
-                29,
-                RentalInfo.FutureAssumptions.PvGrowth
-              ),
-              loanBalance(29, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-            ),
-            monthlyCashflow(
-              compoundInterest(monthlyIncome, 29, RentalInfo.FutureAssumptions.IncomeGrowth),
-              compoundInterest(monthlyExpenses, 29, RentalInfo.FutureAssumptions.ExpenseGrowth)
-            ) * 12
-          ).toFixed(2))
-        }%
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
-const loanBalanceRow = (PurchaseInfo, RentalInfo, mortgagePayment: number) => {
+const loanBalanceRow = (PurchaseInfo,  mortgagePayment: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas(
+          loanBalance(year, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
+        )}
+      </TableCell>
+    )
+  })
   return (
     <TableRow>
       <TableHeader>Loan Balance</TableHeader>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(0, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(1, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(4, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(9, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(14, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(19, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas(
-          loanBalance(29, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized).toFixed(2)
-        )}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
 
 const totalProfitSoldRow = (PurchaseInfo, RentalInfo, mortgagePayment: number, totalCashNeeded: number, monthlyIncome: number, monthlyExpenses: number) => {
+  const cells: any[] = []
+  projectedYears.forEach((year) => {
+    cells.push(
+      <TableCell>
+        ${numberWithCommas((
+          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), year, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
+          - totalCashNeeded
+          - loanBalance(year, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
+          - monthlyCashflow(
+            compoundInterest(monthlyIncome, year, RentalInfo.FutureAssumptions.IncomeGrowth),
+            compoundInterest(monthlyExpenses, year, RentalInfo.FutureAssumptions.ExpenseGrowth)
+          ) * 12
+        ).toFixed(2))}
+      </TableCell>
+    )
+  })
   return (
     <TableRow className="bg-gray-50">
       <TableHeader>Total Profit if Sold</TableHeader>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 0, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(0, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 0, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 0, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 1, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(1, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 1, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 1, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 4, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(4, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 4, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 4, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 9, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(9, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 9, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 9, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 14, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(14, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 14, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 14, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 19, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(19, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 19, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 19, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
-      <TableCell>
-        ${numberWithCommas((
-          compoundInterest(PurchaseInfo.AfterRepairValue * (1 + (RentalInfo.FutureAssumptions.PvGrowth / 100)), 29, RentalInfo.FutureAssumptions.PvGrowth) * ((100 - RentalInfo.FutureAssumptions.SaleExpenses) / 100)
-          - totalCashNeeded
-          - loanBalance(29, mortgagePayment, PurchaseInfo.LoanDetails.InterestRate, PurchaseInfo.LoanDetails.YearsAmortized)
-          - monthlyCashflow(
-            compoundInterest(monthlyIncome, 29, RentalInfo.FutureAssumptions.IncomeGrowth),
-            compoundInterest(monthlyExpenses, 29, RentalInfo.FutureAssumptions.ExpenseGrowth)
-          ) * 12
-        ).toFixed(2))}
-      </TableCell>
+      {cells}
     </TableRow>
   )
 }
