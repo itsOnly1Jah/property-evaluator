@@ -4,6 +4,8 @@ import useSWR from 'swr'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
 
 import { numberWithCommas, sum } from "@/lib/property-evaluator"
 import { updateDollarInput } from "@/lib/formFunctions"
@@ -11,6 +13,7 @@ import { updateDollarInput } from "@/lib/formFunctions"
 const RentalInfo = ({ id }: { id: string }) => {
 
   const [isSubmitting, setSubmitting] = useState(false)
+  const { toast } = useToast()
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
@@ -54,7 +57,20 @@ const RentalInfo = ({ id }: { id: string }) => {
         "Content-Type": "application/json",
       },
       body: json
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => {
+      toast({
+        title: "Success!",
+        description: "The property has been updated successfully.",
+      })
+      console.log(res)
+    }).catch(err => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      })
+      console.log(err)
+    })
 
     setSubmitting(false)
 
@@ -79,6 +95,7 @@ const RentalInfo = ({ id }: { id: string }) => {
 
   return (
     <form className="grid w-full items-start gap-6 overflow-auto p-4 pt-0" onSubmit={onSubmit}>
+      <Toaster />
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
           Income

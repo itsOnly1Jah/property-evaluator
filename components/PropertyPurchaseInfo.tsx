@@ -9,6 +9,8 @@ import {
   RadioGroupItem
 } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
 
 import { numberWithCommas } from "@/lib/property-evaluator"
 import { updatePercentage, updateDownPayment } from "@/lib/formFunctions"
@@ -16,6 +18,7 @@ import { updatePercentage, updateDownPayment } from "@/lib/formFunctions"
 const PurchaseInfo = ({ id }: { id: string }) => {
 
   const [isSubmitting, setSubmitting] = useState(false)
+  const { toast } = useToast()
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,7 +51,20 @@ const PurchaseInfo = ({ id }: { id: string }) => {
         "Content-Type": "application/json",
       },
       body: json
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => {
+      toast({
+        title: "Success!",
+        description: "The property has been updated successfully.",
+      })
+      console.log(res)
+    }).catch(err => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      })
+      console.log(err)
+    })
     setSubmitting(false)
   }
 
@@ -60,6 +76,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
 
   return (
     <form className="grid w-full items-start gap-6 overflow-auto p-4 pt-0" onSubmit={onSubmit}>
+      <Toaster />
       <fieldset className="grid gap-6 rounded-lg border p-4">
         <legend className="-ml-1 px-1 text-sm font-medium">
           Info

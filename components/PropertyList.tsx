@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Toaster } from "@/components/ui/toaster"
 
 import { EditProperty } from "@/components/PropertyDialog"
 
@@ -101,6 +102,7 @@ const PropertyList = ({ filter }: { filter: string }) => {
             </TableCell>
             <TableCell>
               <Dialog>
+                <Toaster />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
