@@ -37,8 +37,8 @@ const PurchaseInfo = ({ id }: { id: string }) => {
           "InterestRate": Number(formData.get("interestRate")),
           "PointsFromLender": Number(formData.get("pointsFromLender")),
           "OtherFeesFromLender": Number(formData.get("otherFeesFromLender")),
-          "FeesInLoan": Boolean(formData.get("feesInLoan")),
-          "InterestOnly": Boolean(formData.get("interestOnly")),
+          "FeesInLoan": formData.get("feesInLoan") == "true" ? true : false,
+          "InterestOnly": formData.get("interestOnly") == "true" ? true : false,
           "YearsAmortized": Number(formData.get("yearsAmortized")),
           "CapRate": Number(formData.get("capRate"))
         }
@@ -65,6 +65,7 @@ const PurchaseInfo = ({ id }: { id: string }) => {
       })
       console.log(err)
     })
+
     setSubmitting(false)
   }
 
