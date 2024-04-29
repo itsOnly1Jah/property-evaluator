@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/card"
 import ProjectionTable from "@/components/PropertyProjectionsTable"
 
-import ExpenseChart from "@/components/PropertyExpenseChart"
+import { ExpenseChart, IncomeExpensesCashflowChart, LoanBalanceValueEquityChart } from "@/components/PropertyExpenseChart"
 
 const PropertyReport = ({ id }: { id: string }) => {
 
@@ -68,8 +68,8 @@ const PropertyReport = ({ id }: { id: string }) => {
 
   const vExpenses: number[] = Object.values(RentalInfo.VariableExpenses)
   const variableExpenses: number = sum(vExpenses.map((expense: number) => monthlyIncome * expense / 100))
-  const fixedExpensesNoTax = Object.fromEntries(Object.entries(RentalInfo.FixedExpenses).filter( e => e[0] != "PropertyTaxes" ))
-  const monthlyExpenses = -(sum(Object.values(fixedExpensesNoTax)) + RentalInfo.FixedExpenses.PropertyTaxes/12 + variableExpenses + (Loan.InterestOnly ? intrestOnlyPayment : mortgagePayment))
+  const fixedExpensesNoTax = Object.fromEntries(Object.entries(RentalInfo.FixedExpenses).filter(e => e[0] != "PropertyTaxes"))
+  const monthlyExpenses = -(sum(Object.values(fixedExpensesNoTax)) + RentalInfo.FixedExpenses.PropertyTaxes / 12 + variableExpenses + (Loan.InterestOnly ? intrestOnlyPayment : mortgagePayment))
   const annualExpenses = monthlyExpenses * 12
   const totalProjectCost = sum([
     PurchaseInfo.PurchasePrice,
@@ -219,7 +219,7 @@ const PropertyReport = ({ id }: { id: string }) => {
               </div>
               <div>
                 <p><strong>Down Payment</strong><span className="margin mx-5"></span>${numberWithCommas(Loan.DownPayment.toFixed(2))}</p>
-                <p><strong>Loan Amount</strong><span className="margin mx-7"></span>${numberWithCommas((PurchaseInfo.PurchasePrice - Loan.DownPayment) .toFixed(2))}</p>
+                <p><strong>Loan Amount</strong><span className="margin mx-7"></span>${numberWithCommas((PurchaseInfo.PurchasePrice - Loan.DownPayment).toFixed(2))}</p>
                 <p><strong>Loan Points</strong><span className="margin mx-9"></span>{Loan.PointsFromLender}</p>
                 <p><strong>Amortized</strong><span className="margin mx-10"></span>{Loan.YearsAmortized}</p>
               </div>
@@ -303,6 +303,16 @@ const PropertyReport = ({ id }: { id: string }) => {
             </div>
             <div className="pt-14 content-center">
               <ProjectionTable property={data[0]} />
+            </div>
+            <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 pt-10">
+              <div>
+                <h5 className="text-center">Income, Expenses and Cashflow</h5>
+                <IncomeExpensesCashflowChart property={data[0]} />
+              </div>
+              <div>
+                <h5 className="text-center">Loan Balance, Value and Equity</h5>
+                <LoanBalanceValueEquityChart property={data[0]} />
+              </div>
             </div>
           </CardContent>
         </Card>
