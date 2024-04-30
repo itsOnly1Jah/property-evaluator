@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label"
 import { PlusCircle } from "lucide-react"
 
 export const AddProperty = () => {
-
+  const [open, setOpen] = useState(false)
   const [isSubmitting, setSubmitting] = useState(false)
   const { toast } = useToast()
 
@@ -56,12 +56,12 @@ export const AddProperty = () => {
         "Content-Type": "application/json",
       },
       body: json
-    }).then(res => {
+    }).then(() => {
       toast({
         title: "Success!",
         description: "New property added successfully.",
       })
-      console.log(res)
+      setOpen(false)
     }).catch(err => {
       toast({
         variant: "destructive",
@@ -75,7 +75,7 @@ export const AddProperty = () => {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <Toaster />
       <DialogTrigger asChild>
         <Button size="sm" className="h-8 gap-1">
