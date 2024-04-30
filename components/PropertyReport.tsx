@@ -306,11 +306,11 @@ const PropertyReport = ({ id }: { id: string }) => {
             </div>
             <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 pt-10">
               <div>
-                <h5 className="text-center">Income, Expenses and Cashflow</h5>
+                <h5 className="text-center pb-5">Income, Expenses and Cashflow</h5>
                 <IncomeExpensesCashflowChart property={data[0]} />
               </div>
               <div>
-                <h5 className="text-center">Loan Balance, Value and Equity</h5>
+                <h5 className="text-center pb-5">Loan Balance, Value and Equity</h5>
                 <LoanBalanceValueEquityChart property={data[0]} />
               </div>
             </div>
