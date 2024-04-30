@@ -86,7 +86,7 @@ const PropertyList = ({ filter }: { filter: string }) => {
               />
             </TableCell>
             <TableCell className="font-medium">
-              {property.Address.Street}, {property.Address.City}, {property.Address.State} {property.Address.Zipcode}
+              <Link href={`/property/${property.Id}`} >{property.Address.Street}, {property.Address.City}, {property.Address.State} {property.Address.Zipcode}</Link>
             </TableCell>
             <TableCell>
               <Badge variant="outline">{property.Status}</Badge>
